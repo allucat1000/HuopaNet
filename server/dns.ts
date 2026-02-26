@@ -60,6 +60,7 @@ export class HuopaNetDNSServer {
             };
 
             s.onmessage = async(r: MessageEvent)=> {
+                console.log("message")
                 let bytes: Uint8Array;
         
                 if (r.data instanceof ArrayBuffer) {
