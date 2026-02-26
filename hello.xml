@@ -1,0 +1,9 @@
+<root>
+    <metadata>
+        <title>Hello, World!</title>
+    </metadata>
+    <text size="16">Hello!</text>
+    <text>This is an example HuopaNet webpage</text>
+    <button width="200" height="50">And this is a button!</button>
+    <link src="hnwp://test.example.org/">This is a link</link>
+</root>
