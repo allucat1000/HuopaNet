@@ -152,7 +152,7 @@ export class HuopaNetDNSServer {
                                 ok: false,
                                 error: "BAD_REQUEST",
                                 code: 0,
-                                body: `Invalid format ${!o} ${!o.key} ${!o.cmd} ${!o.secure} ${!o.version} ${!o.http} ${!o.hnwp} ${!o.http.domain} ${!o.http.path} ${!o.hnwp.domain} ${!o.hnwp.path}`
+                                body: `Invalid format`
                             }));
                         
                         if (o.key.length < 32)

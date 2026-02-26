@@ -207,14 +207,10 @@ export class HuopaNetServer {
   registerDNS(data: HuopaNetDNSRegisterRequest, dnsServer: string) {
     const ws = new WebSocket(dnsServer);
     ws.onopen = () => {
-      console.log({
+      ws.send(encode({
         cmd: "dns_register",
         secure: false, 
         version: VERSION,
-        ...data
-      });
-      ws.send(encode({
-        cmd: "dns_register",
         ...data
       }));
     }
