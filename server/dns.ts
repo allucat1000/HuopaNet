@@ -1,6 +1,4 @@
-import WebSocket, { WebSocketServer } from 'ws';
 import { encode, decode } from "@msgpack/msgpack";
-import { MessageEvent } from 'ws';
 import { Buffer } from "node:buffer";
 import { HuopaNetPacket, VERSION, HuopaNetUrlObject } from "./core.ts";
 
@@ -53,35 +51,22 @@ interface HuopaNetDNSResolveResponse extends HuopaNetPacket {
 }
 
 export class HuopaNetDNSServer {
-    private wss: WebSocketServer;
 
-    constructor(port: number) {
-        this.wss = new WebSocketServer({
-            port,
-            perMessageDeflate: {
-                zlibDeflateOptions: {
-                chunkSize: 1024,
-                memLevel: 7,
-                level: 3
-                },
-                zlibInflateOptions: {
-                chunkSize: 10 * 1024
-                },
-                clientNoContextTakeover: true,
-                serverNoContextTakeover: true,
-                serverMaxWindowBits: 10,
-
-                concurrencyLimit: 10,
-                threshold: 1024
+    constructor(port: number = 3000) {
+        Deno.serve({ port }, (req, info) => {
+            if (req.headers.get("upgrade") !== "websocket") {
+                return new Response("Not a websocket upgrade", { status: 426 });
             }
-        });
 
-        // deno-lint-ignore no-explicit-any
-        this.wss.on("connection", (s: WebSocket, req: any) => {
-            const ip = req.socket.remoteAddress;
-            console.log("Client connected");
-            s.on("message", async (r: MessageEvent) => {
-                console.log("message");
+            const ip = info.remoteAddr.hostname;
+
+            const { socket: s, response } = Deno.upgradeWebSocket(req);
+
+            s.onopen = () => {
+                console.log("Client connected");
+            };
+
+            s.onmessage = async(r: MessageEvent)=> {
                 let bytes: Uint8Array;
         
                 if (r.data instanceof ArrayBuffer) {
@@ -244,7 +229,9 @@ export class HuopaNetDNSServer {
                         }));
                     };
                 };
-            });
+            };
+
+            return response;
         });
     };
 };
