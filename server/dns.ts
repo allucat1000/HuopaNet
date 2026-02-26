@@ -60,7 +60,6 @@ export class HuopaNetDNSServer {
             };
 
             s.onmessage = async(r: MessageEvent)=> {
-                console.log("message")
                 let bytes: Uint8Array;
         
                 if (r.data instanceof ArrayBuffer) {
@@ -80,7 +79,7 @@ export class HuopaNetDNSServer {
                         ok: false,
                         error: "BAD_REQUEST",
                         code: 0,
-                        body: `Invalid format`
+                        body: `Invalid format, not object`
                     }));
                 }
                 const p = d as HuopaNetPacket;

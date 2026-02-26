@@ -1,4 +1,4 @@
-import WebSocket, { WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import { encode, decode } from "@msgpack/msgpack";
 import { MessageEvent } from 'ws';
 import { Buffer } from "node:buffer";
@@ -207,10 +207,16 @@ export class HuopaNetServer {
   registerDNS(data: HuopaNetDNSRegisterRequest, dnsServer: string) {
     const ws = new WebSocket(dnsServer);
     ws.onopen = () => {
-      ws.send({
+      console.log({
         cmd: "dns_register",
+        secure: false, 
+        version: VERSION,
         ...data
       });
+      ws.send(encode({
+        cmd: "dns_register",
+        ...data
+      }));
     }
     ws.onmessage = async (r: MessageEvent) => {
       let bytes: Uint8Array;
