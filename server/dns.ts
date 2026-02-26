@@ -81,6 +81,7 @@ export class HuopaNetDNSServer {
             const ip = req.socket.remoteAddress;
             console.log("Client connected");
             s.on("message", async (r: MessageEvent) => {
+                console.log("message");
                 let bytes: Uint8Array;
         
                 if (r.data instanceof ArrayBuffer) {
