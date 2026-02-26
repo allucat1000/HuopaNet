@@ -1,6 +1,16 @@
 import { HuopaNetServer, HuopaNetRequest, HuopaNetResponseFunctions } from "./core.ts";
 
+const auth = Deno.env.get("DNS_AUTH_KEY");
+
 const app = new HuopaNetServer({ domain: "example.com", path: [], protocol: "hnwp"}, 8000);
+
+if (auth)
+    app.registerDNS({
+        hnwp: { domain: "example.com", path: [], protocol: "hnwp"},
+        http: { domain: "localhost", port: 8000, path: [], protocol: "http" },
+        key: auth,
+
+    }, "https://huopanet.allucat1000.deno.net/");
 
 app.get = (req: HuopaNetRequest, res: HuopaNetResponseFunctions) => {
     if (req.path.length === 0 && !req.subdomain) {

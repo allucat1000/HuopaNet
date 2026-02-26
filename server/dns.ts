@@ -35,20 +35,13 @@ interface HuopaNetDNSResolveRequest extends HuopaNetPacket, HuopaNetUrlObject {
     secure: boolean;
 };
 
-interface HuopaNetDNSRegisterRequest extends HuopaNetPacket {
+export interface HuopaNetDNSRegisterRequest extends HuopaNetPacket {
     version: number;
     secure: boolean;
     hnwp: HuopaNetUrlObject;
     http: HuopaNetUrlObject;
     key: string;
 };
-
-interface HuopaNetDNSResolveResponse extends HuopaNetPacket {                   
-    ok: boolean
-    error?: string
-    code?: number,
-    body: string | HuopaNetUrlObject;
-}
 
 export class HuopaNetDNSServer {
 

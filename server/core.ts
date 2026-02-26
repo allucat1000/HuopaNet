@@ -37,6 +37,12 @@ export interface HuopaNetUrlObject {
   port?: number;
 }
 
+export interface HuopaNetDNSRegisterRequest {
+  hnwp: HuopaNetUrlObject;
+  http: HuopaNetUrlObject;
+  key: string;
+};
+
 export class HuopaNetResponseFunctions {
   private ws: WebSocket;
   constructor(ws: WebSocket) {
@@ -196,5 +202,51 @@ export class HuopaNetServer {
 
   onConnection = (_s: WebSocket) => {};
 
-  get = (_req: HuopaNetRequest, _res: HuopaNetResponseFunctions) => {}
+  get = (_req: HuopaNetRequest, _res: HuopaNetResponseFunctions) => {};
+
+  registerDNS(data: HuopaNetDNSRegisterRequest, dnsServer: string) {
+    const ws = new WebSocket(dnsServer);
+    ws.onopen = () => {
+      ws.send({
+        cmd: "dns_register",
+        ...data
+      });
+    }
+    ws.onmessage = async (r: MessageEvent) => {
+      let bytes: Uint8Array;
+
+      if (r.data instanceof ArrayBuffer) {
+        bytes = new Uint8Array(r.data);
+      } else if (r.data instanceof Blob) {
+        bytes = new Uint8Array(await r.data.arrayBuffer());
+      } else if (typeof r.data === "string") {
+        throw new Error();
+      } else {
+        bytes = new Uint8Array(r.data as Buffer);
+      }
+
+      const d = decode(bytes);
+      if (typeof d !== "object" || d === null) {
+        return;
+      }
+      const p = d as HuopaNetPacket;
+      switch (p.cmd) {
+        case "dns_register": {
+          if (p.ok) {
+            console.log("Registered domain!")
+          } else {
+            throw new Error("Failed to register domain to DNS server: " + (p.body ?? "Unknown Error"))
+          }
+          return;
+        }
+        case "dns_error": {
+          throw new Error("DNS error: " + (p.body ?? "Unknown Error"));
+        }
+        default: {
+          return;
+        }
+      }
+      
+    }
+  }
 }
