@@ -146,7 +146,7 @@ export class HuopaNetDNSServer {
                                 body: `Unsupported version ${o.version}`
                             }));
                         
-                        if (!o || !o.key || !o.cmd || !o.secure || !o.version || !o.http || !o.hnwp || !o.http.domain || !o.http.path || !o.hnwp.domain || !o.hnwp.path)
+                        if (!o || !o.key || !o.cmd || o.secure === null || !o.version || !o.http || !o.hnwp || !o.http.domain || !o.http.path || !o.hnwp.domain || !o.hnwp.path)
                             return s.send(encode({
                                 cmd: "dns_error",
                                 ok: false,
