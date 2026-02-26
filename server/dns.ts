@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import { encode, decode } from "@msgpack/msgpack";
 import { MessageEvent } from 'ws';
 import { Buffer } from "node:buffer";
@@ -80,7 +80,7 @@ export class HuopaNetDNSServer {
         this.wss.on("connection", (s: WebSocket, req: any) => {
             const ip = req.socket.remoteAddress;
             console.log("Client connected");
-            s.onmessage = async (r: MessageEvent) => {
+            s.on("message", async (r: MessageEvent) => {
                 let bytes: Uint8Array;
         
                 if (r.data instanceof ArrayBuffer) {
@@ -243,7 +243,7 @@ export class HuopaNetDNSServer {
                         }));
                     };
                 };
-            };
+            });
         });
     };
 };
